@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> v_node[10];
+char color[10];
+
+vector<int>path;
+
+void DFS(int source){
+    int u = source;
+    color[source] = 'g';
+
+    for(auto v : v_node[u]){
+        if(color[v] == 'w')
+            DFS(v);
+    }
+    color[u]='b';
+    path.push_back(u);
+}
+
+void Topological_Sort(int node)
+{
+    for(int i=0;i<node;i++)
+    {
+        if(color[i]=='w')
+        {
+            DFS(i);
+        }
+    }
+    reverse(path.begin(),path.end());
+}
+
+int main(){
+    int node,edge;
+    cin>>node>>edge;
+
+    for(int i=0;i<edge;i++){
+        int a,b;
+        cin>>a>>b;
+        v_node[a].push_back(b);
+    }
+    //initializing color white for each vertex
+    for(int i=1;i<=node;i++)
+    {
+        color[i]='w';
+    }
+    Topological_Sort(node);
+    for(int i=0;i<node;i++)
+    {
+        cout<<path[i]<<" ";
+    }
+
+
+    return 0;
+}
+
+
