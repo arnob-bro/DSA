@@ -1,0 +1,96 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<pair<int,int>> v_node[10];
+char color[10];
+vector<int> cost(10,INT_MAX);
+vector<int>path;
+vector<int>Shortest_path;
+vector<int> parent(10,-1);
+
+void DFS(int source)
+{
+    int u = source;
+    color[u] = 'g';
+
+    for(auto v : v_node[u]){
+        if(color[v.first] == 'w')
+            DFS(v.first);
+    }
+    color[u]='b';
+    path.push_back(u);
+}
+
+void Topological_Sort(int node)
+{
+    for(int i=0;i<node;i++)
+    {
+        if(color[i]=='w')
+        {
+            DFS(i);
+        }
+    }
+    reverse(path.begin(),path.end());
+}
+
+void relax(int u, int v, int weight)
+{
+    if (cost[v]>cost[u]+weight)
+    {
+        cost[v]=cost[u]+weight;
+        parent[v]=u;
+    }
+}
+
+void DAG_Shortest_Path(int source, int nodes)
+{
+    Topological_Sort(nodes);
+    cost[source]=0;
+    for(int i=0;i<nodes;i++)
+    {
+        int node = path[i];
+        Shortest_path.push_back(node);
+        for(auto v : v_node[node])
+        {
+            relax(node, v.first, v.second);
+        }
+    }
+}
+
+int main(){
+    int node,edge;
+    cin>>node>>edge;
+    cout<<"From : To : Weight"<<endl;
+    for(int i=0;i<edge;i++)
+    {
+        int from, to, weight;
+        cin>>from>>to>>weight;
+        v_node[from].push_back(make_pair(to,weight));
+    }
+    //initializing color white for each vertex
+    for(int i=0;i<node;i++)
+    {
+        color[i]='w';
+    }
+
+    int source;
+    cin>>source;
+    DAG_Shortest_Path(source,node);
+    cout<<"path from "<<source<<endl;
+    for(int i=0; i<Shortest_path.size(); i++)
+    {
+        cout<<Shortest_path[i];
+        if(i!=Shortest_path.size()-1)
+            cout<<"->";
+    }
+    cout<<endl;
+    cout <<"cost: "<<endl;
+    for (int i = 0; i < node; i++){
+        if(cost[i]==INT_MAX)
+            cout<<"INF ";
+        else
+            cout <<cost[i]<< " ";
+    }
+    cout<<endl;
+    return 0;
+}
