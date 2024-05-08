@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+using namespace std;
+/*
+input:
+6 9
+1 2 1
+2 4 2
+4 6 1
+1 3 5
+3 5 2
+5 6 2
+2 3 2
+2 5 1
+4 5 3
+1
+
+*/
+
+priority_queue<pair<int, int>> q;
+vector<pair<int,int> > g[1000];
+vector<int> dist(1000,INT_MAX);
+vector<int> p(1000,-1);\
+set<int> s;
+
+void go(int dest){
+    if(p[dest]!=dest){
+        go(p[dest]);
+        cout<<"->";
+    }
+    cout<<dest;
+}
+
+void initialize_single_source(int n, int s)
+{
+    for(int i=0;i<n+1;i++){
+        dist[i] = INT_MAX;
+        p[i] = i;
+    }
+    dist[s] = 0;
+}
+
+void relax(int parent,int child,int weight){
+    if(dist[parent]+weight < dist[child]){
+        dist[child]=dist[parent]+weight;
+        p[child]=parent;
+
+            q.push(make_pair(dist[child],child));
+    }
+}
+
+void dijkstra(int source,int node)
+{
+    initialize_single_source(node,source);
+    q.push(make_pair(0, source));
+    while(!q.empty())
+    {
+        int u=q.top();
+        q.pop();
+        int parent=u.second;
+        for(int v:g[parent]){
+            int child=v.first;
+            int weight=v.second;
+            relax(parent,child,weight);
+        }
+    }
+}
+
+int main()
+{
+    int node,edge;
+    cin>>node>>edge;
+    cout<<"From : To : Weight"<<endl;
+    for(int i=0;i<edge;i++){
+        int from, to, weight;
+        cin>>from>>to>>weight;
+        g[s].push_back(make_pair(d,w));
+    }
+    int source;
+    cin>>source;
+    dijkstra(source,node);
+    for(int i=1;i<=node;i++){
+        cout<<i<<") cost: "<<dist[i]<<" , Path: ";
+        go(i);
+        cout<<endl;
+    }
+
+    return 0;
+}
+
